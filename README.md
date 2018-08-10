@@ -9,7 +9,7 @@ See below instructions to install and use the library.
 
 # Installation
 ```
-npm i --save sse-js
+npm i --save @vallejos/sse-js
 ```
 
 # Examples and Documentation
