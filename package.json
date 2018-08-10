@@ -1,0 +1,34 @@
+{
+  "name": "sse-js",
+  "version": "0.0.1",
+  "description": "Server-Sent Events JavaScript Library",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "babel src -d dist/lib && uglifyjs dist/lib/sse-js.js -o dist/lib/sse-js.min.js -c"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vallejos/sse-js.git"
+  },
+  "keywords": [
+    "javascript",
+    "sse",
+    "server-sent",
+    "event",
+    "library",
+    "utility",
+    "EventSource"
+  ],
+  "author": "Fabian Vallejos <vallejosfab@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vallejos/sse-js/issues"
+  },
+  "homepage": "https://github.com/vallejos/sse-js#readme",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "uglify-js": "^3.4.7"
+  }
+}
