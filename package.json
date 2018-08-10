@@ -1,6 +1,6 @@
 {
   "name": "@vallejos/sse-js",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Server-Sent Events JavaScript Library",
   "main": "index.js",
   "scripts": {

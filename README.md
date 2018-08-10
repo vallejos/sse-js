@@ -80,4 +80,4 @@ disableDebug();
 All PRs are welcome :)
 
 # LICENSE
-MIT
+[a relative link](LICENSE)
