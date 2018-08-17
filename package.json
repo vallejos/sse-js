@@ -1,10 +1,11 @@
 {
   "name": "@vallejos/sse-js",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Server-Sent Events JavaScript Library",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
+    "oldtest": "./node_modules/mocha/bin/mocha --require babel-core/register --require ./src/eventsource-polyfill.js ./src/**/*.spec.js",
     "build": "babel src -d dist/lib && uglifyjs dist/lib/sse-js.js -o dist/lib/sse-js.min.js -c"
   },
   "repository": {
@@ -28,7 +29,11 @@
   "homepage": "https://github.com/vallejos/sse-js#readme",
   "devDependencies": {
     "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
     "babel-preset-env": "^1.7.0",
+    "chai": "^4.1.2",
+    "jest": "^23.5.0",
+    "mocha": "^5.2.0",
     "uglify-js": "^3.4.7"
   }
 }

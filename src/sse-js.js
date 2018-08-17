@@ -1,15 +1,20 @@
 /**
- * Class SSE
+ * Class SSEClient
  * Server-Sent Events JavaScript Client
  * https://github.com/vallejos/sse-js
  *
  * Usage example:
  *
- * const sseClient = new SSE();
+ * const sseClient = new SSEClient();
  * Object.freeze(sseClient);
  * export default sseClient;
  */
-class SSE {
+
+import { EventSource } from './eventsource-polyfill';
+
+'use strict';
+
+export class SSEClient {
 
     /**
      * Create singleton and establish a connection
@@ -26,9 +31,9 @@ class SSE {
         }
 
         // handle singleton
-        if (!SSE.instance) {
+        if (!SSEClient.instance) {
             // this could be redundant if we're using const and freeze but just in case
-            SSE.instance = this;
+            SSEClient.instance = this;
         }
 
         if (!url) {
@@ -45,6 +50,7 @@ class SSE {
 
             // if a message was received
             this.evtSource.onmessage = event => {
+                // @todo: check origin for security https://www.html5rocks.com/en/tutorials/eventsource/basics/
                 this.subscribers.forEach(handler => {
                     if ( (typeof handler.callbackFn === 'function') && 
                         (handler.eventName === event.event || handler.eventName === null) ) {
@@ -83,7 +89,7 @@ class SSE {
             return err
         }
 
-        return SSE.instance;
+        return SSEClient.instance;
     }
 
     /**
@@ -97,14 +103,14 @@ class SSE {
             this.subscribers = [];
 
             if (this.debug) {
-                console.log('SSE: Connection closed');
+                console.log('SSEClient: Connection closed');
             }
     
             return true;
         }
 
         if (this.debug) {
-            console.log('SSE: Connection not opened');
+            console.log('SSEClient: Connection not opened');
         }
 
         return false;
@@ -131,7 +137,7 @@ class SSE {
         });
 
         if (this.debug) {
-            console.log(`SSE: ${id} subscribed`);
+            console.log(`SSEClient: ${id} subscribed`);
         }
 
         return id;
@@ -151,7 +157,7 @@ class SSE {
             this.subscribers.splice(idx, 1);
 
             if (this.debug) {
-                console.log(`SSE: ${id} unsubscribed`);
+                console.log(`SSEClient: ${id} unsubscribed`);
             }
     
             return true;
@@ -199,7 +205,7 @@ class SSE {
      * @private
      */
     _isSupported () {
-        return !!EventSource;
+        return typeof EventSource !== 'undefined';
     }
 
 }

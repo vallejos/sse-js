@@ -1,21 +1,29 @@
 'use strict';
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.SSEClient = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /**
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * Class SSEClient
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * Server-Sent Events JavaScript Client
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * https://github.com/vallejos/sse-js
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      *
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * Usage example:
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      *
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * const sseClient = new SSEClient();
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * Object.freeze(sseClient);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * export default sseClient;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      */
+
+var _eventsourcePolyfill = require('./eventsource-polyfill');
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-/**
- * Class SSE
- * Server-Sent Events JavaScript Client
- * https://github.com/vallejos/sse-js
- *
- * Usage example:
- *
- * const sseClient = new SSE();
- * Object.freeze(sseClient);
- * export default sseClient;
- */
-var SSE = function () {
+'use strict';
+
+var SSEClient = exports.SSEClient = function () {
 
     /**
      * Create singleton and establish a connection
@@ -26,22 +34,22 @@ var SSE = function () {
      * @param {boolean} debug
      * @returns {*}
      */
-    function SSE(url) {
+    function SSEClient(url) {
         var _this = this;
 
         var withCredentials = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
         var debug = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 
-        _classCallCheck(this, SSE);
+        _classCallCheck(this, SSEClient);
 
         if (!this._isSupported()) {
             throw new Error('EventSource not supported by your browser/system');
         }
 
         // handle singleton
-        if (!SSE.instance) {
+        if (!SSEClient.instance) {
             // this could be redundant if we're using const and freeze but just in case
-            SSE.instance = this;
+            SSEClient.instance = this;
         }
 
         if (!url) {
@@ -54,10 +62,11 @@ var SSE = function () {
         this.withCredentials = withCredentials;
 
         try {
-            this.evtSource = new EventSource(this.url, { withCredentials: this.withCredentials });
+            this.evtSource = new _eventsourcePolyfill.EventSource(this.url, { withCredentials: this.withCredentials });
 
             // if a message was received
             this.evtSource.onmessage = function (event) {
+                // @todo: check origin for security https://www.html5rocks.com/en/tutorials/eventsource/basics/
                 _this.subscribers.forEach(function (handler) {
                     if (typeof handler.callbackFn === 'function' && (handler.eventName === event.event || handler.eventName === null)) {
                         if (_this.debug) {
@@ -94,7 +103,7 @@ var SSE = function () {
             return err;
         }
 
-        return SSE.instance;
+        return SSEClient.instance;
     }
 
     /**
@@ -104,7 +113,7 @@ var SSE = function () {
      */
 
 
-    _createClass(SSE, [{
+    _createClass(SSEClient, [{
         key: 'close',
         value: function close() {
             if (this.evtSource) {
@@ -112,14 +121,14 @@ var SSE = function () {
                 this.subscribers = [];
 
                 if (this.debug) {
-                    console.log('SSE: Connection closed');
+                    console.log('SSEClient: Connection closed');
                 }
 
                 return true;
             }
 
             if (this.debug) {
-                console.log('SSE: Connection not opened');
+                console.log('SSEClient: Connection not opened');
             }
 
             return false;
@@ -152,7 +161,7 @@ var SSE = function () {
             });
 
             if (this.debug) {
-                console.log('SSE: ' + id + ' subscribed');
+                console.log('SSEClient: ' + id + ' subscribed');
             }
 
             return id;
@@ -177,7 +186,7 @@ var SSE = function () {
                 this.subscribers.splice(idx, 1);
 
                 if (this.debug) {
-                    console.log('SSE: ' + id + ' unsubscribed');
+                    console.log('SSEClient: ' + id + ' unsubscribed');
                 }
 
                 return true;
@@ -239,9 +248,9 @@ var SSE = function () {
     }, {
         key: '_isSupported',
         value: function _isSupported() {
-            return !!EventSource;
+            return typeof _eventsourcePolyfill.EventSource !== 'undefined';
         }
     }]);
 
-    return SSE;
+    return SSEClient;
 }();
